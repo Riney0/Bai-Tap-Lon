@@ -108,7 +108,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
 
     // 1. Vẽ tiêu đề "CHILLING LEVELING"
     SDL_Surface* titleSurface1 = TTF_RenderText_Blended(titleFont, "CHILLING", blackColor);
-    SDL_Surface* titleSurface2 = TTF_RenderText_Blended(titleFont, "        LEVELING", blackColor); // 8 dấu cách
+    SDL_Surface* titleSurface2 = TTF_RenderText_Blended(titleFont, "       LEVELING", blackColor); // 7 dấu cách
     if (titleSurface1 && titleSurface2) {
         SDL_Texture* titleTexture1 = SDL_CreateTextureFromSurface(renderer, titleSurface1);
         SDL_Texture* titleTexture2 = SDL_CreateTextureFromSurface(renderer, titleSurface2);
@@ -132,13 +132,13 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     // 3. Vẽ số lần tap và level bên dưới cái mõ
     std::string tapText = "Taps: " + std::to_string(static_cast<int>(player.getActivitive()));
     std::string levelText = "Level: " + std::to_string(player.getLevel());
-    SDL_Surface* tapSurface = TTF_RenderText_Blended(textFont, tapText.c_str(), whiteColor);
-    SDL_Surface* levelSurface = TTF_RenderText_Blended(textFont, levelText.c_str(), whiteColor);
+    SDL_Surface* tapSurface = TTF_RenderText_Blended(textFont, tapText.c_str(), blackColor);
+    SDL_Surface* levelSurface = TTF_RenderText_Blended(textFont, levelText.c_str(), blackColor);
     if (tapSurface && levelSurface) {
         SDL_Texture* tapTexture = SDL_CreateTextureFromSurface(renderer, tapSurface);
         SDL_Texture* levelTexture = SDL_CreateTextureFromSurface(renderer, levelSurface);
-        SDL_Rect tapRect = {10, 170, tapSurface->w, tapSurface->h};
-        SDL_Rect levelRect = {10, 200, levelSurface->w, levelSurface->h};
+        SDL_Rect tapRect = {545, 170, tapSurface->w, tapSurface->h};
+        SDL_Rect levelRect = {545, 200, levelSurface->w, levelSurface->h};
         SDL_RenderCopy(renderer, tapTexture, nullptr, &tapRect);
         SDL_RenderCopy(renderer, levelTexture, nullptr, &levelRect);
         SDL_DestroyTexture(tapTexture);

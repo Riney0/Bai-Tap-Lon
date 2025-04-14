@@ -69,7 +69,7 @@ bool Game::init() {
     }
 
     if (bossBattle.isActive()) {
-        // background.setUseBossBackground(true);
+        background.setUseBossBackground(true);
         background.loadBossBackground("asset/bossfight_background.png");
     } else {
         background.setUseBossBackground(false);
