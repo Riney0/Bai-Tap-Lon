@@ -15,6 +15,6 @@ const int MAX_TAP_SPEED = 100;
 // Màu sắc
 const SDL_Color COLOR_WHITE = {255, 255, 255, 255};
 const SDL_Color COLOR_GREEN = {0, 255, 0, 255};
-const SDL_Color COLOR_BLACK = {0, 0, 0, 1};
+const SDL_Color COLOR_BLACK = {31, 30, 51, 255};
 
 #endif

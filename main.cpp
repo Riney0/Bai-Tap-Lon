@@ -19,4 +19,5 @@ int main(int argc, char* argv[]) {
 
 
 // ĐM GAME LỒN ĐM GAME LỒN ĐM GAME LÔN
+// TOI BI NGu
 // g++ main.cpp Game.cpp UI.cpp TappingSystem.cpp BossBattle.cpp Challenge.cpp Player.cpp Item.cpp Background.cpp AudioManager.cpp -o game -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf

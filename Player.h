@@ -16,6 +16,7 @@ public:
     int getLevel() const;
     int getTapCount() const;
     void checkLevelUp();
+    void incrementTapCount();
 
 private:
     Game* game;

@@ -12,6 +12,7 @@ private:
     Game* game;            // Con trỏ tới Game để gọi playTapSound và truy cập Challenge
     Player* player;        // Con trỏ tới Player để tăng activitive
     BossBattle* bossBattle; // Con trỏ tới BossBattle để tăng số lần tap
+    bool spacePressed;     // Theo dõi trạng thái phím cách (Spacebar)
 
 public:
     TappingSystem(Player* player, BossBattle* bossBattle);

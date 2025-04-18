@@ -174,7 +174,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         if (items[i].isActive() && itemTextures[i]) {
             float alpha = (items[i].getRemainingTime() / items[i].getDuration()) * 255; // Tính độ mờ
             SDL_SetTextureAlphaMod(itemTextures[i], static_cast<Uint8>(alpha));
-            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 250, 200 + i * 100, 100, 100}; // Kích thước giả định 100x100
+            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 250, 200 + i * 100, 200, 200}; // Kích thước giả định 100x100
             SDL_RenderCopy(renderer, itemTextures[i], nullptr, &itemEffectRect);
         }
     }

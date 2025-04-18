@@ -79,3 +79,7 @@ float Player::getActivitive() const { return activitive; }
 float Player::getRadient() const { return radient; }
 int Player::getLevel() const { return level; }
 int Player::getTapCount() const { return tapCount; }
+
+void Player::incrementTapCount() {
+    tapCount++; // Tăng số lần tap
+}
