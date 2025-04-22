@@ -50,6 +50,10 @@ bool Game::init() {
     }
     std::cerr << "Renderer created successfully: " << renderer << std::endl; // Debug
 
+    // // Khởi tạo UI sau khi renderer được tạo
+    // ui = UI(renderer, this);
+    // ui.loadResources(); // Gọi loadResources() sau khi renderer được khởi tạo
+
     if (!audioManager.init()) {
         std::cerr << "AudioManager could not initialize!" << std::endl;
         return false;

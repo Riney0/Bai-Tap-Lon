@@ -5,7 +5,7 @@
 
 Background::Background(SDL_Renderer* renderer) 
     : renderer(renderer), backgroundTexture(nullptr), scrollingLayer(nullptr), 
-      scrollingOffset(0), scrollingSpeed(50.0f), layerWidth(0), layerHeight(0) {}
+      scrollingOffset(0), scrollingSpeed(45.0f), layerWidth(0), layerHeight(0) {}
 
 Background::~Background() {
     clean();
