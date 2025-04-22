@@ -2,6 +2,7 @@
 #include "Constants.h"
 #include "Game.h"
 #include <cstdlib>
+#include <iostream> // Debug
 
 Player::Player(Game* game) 
     : game(game), activitive(0), radient(0), level(0), tapCount(0), moMultiplier(1.0f), 
@@ -9,7 +10,12 @@ Player::Player(Game* game)
 
 void Player::tapMo() {
     float activitiveGained = BASE_ACTIVITIVE_PER_TAP * moMultiplier * activitiveMultiplier;
-    float radientGained = (rand() % (50 - 3 + 1) + 3) * radientMultiplier;  
+    float radientGained = (rand() % (50 - 3 + 1) + 3) * radientMultiplier;
+
+    // Debug
+    std::cerr << "Radient Multiplier: " << radientMultiplier 
+              << ", Radient Gained: " << radientGained 
+              << ", Radient Before: " << radient;
 
     // Áp dụng hiệu ứng vật phẩm
     for (const auto& item : game->getItems()) {

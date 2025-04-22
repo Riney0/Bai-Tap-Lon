@@ -14,6 +14,10 @@ int main(int argc, char* argv[]) {
     // Chạy game
     game.run();
 
+    // // giữ console mở
+    // std::cout << "Press Enter to exit..." << std::endl;
+    // std::cin.get();
+
     return 0;
 }
 
