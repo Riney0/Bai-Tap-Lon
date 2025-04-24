@@ -51,7 +51,7 @@ void UI::loadResources() {
     }
 
     // Tải hình ảnh
-    moTexture = IMG_LoadTexture(renderer, "asset/mo.png");
+    moTexture = IMG_LoadTexture(renderer, "asset/mo.jpg");
     if (!moTexture) {
         std::cerr << "Failed to load mo texture: " << IMG_GetError() << std::endl;
     }
@@ -73,7 +73,7 @@ void UI::loadResources() {
 
 void UI::showBossMessage(const std::string& message) {
     bossMessage = message;
-    messageTimer = 5.0f; // Hiển thị thông báo trong 5 giây
+    messageTimer = 60.0f; // Hiển thị thông báo trong 5 giây
 }
 
 void UI::showLevelUpMessage(int level) {
@@ -130,7 +130,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     }
 
     // 3. Vẽ số lần tap và level bên dưới cái mõ
-    std::string tapText = "Taps: " + std::to_string(static_cast<int>(player.getActivitive()));
+    std::string tapText = "Taps: " + std::to_string(player.getTapCount());
     std::string levelText = "Level: " + std::to_string(player.getLevel());
     SDL_Surface* tapSurface = TTF_RenderText_Blended(textFont, tapText.c_str(), blackColor);
     SDL_Surface* levelSurface = TTF_RenderText_Blended(textFont, levelText.c_str(), blackColor);

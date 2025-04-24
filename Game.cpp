@@ -5,7 +5,7 @@
 
 Game::Game() 
     : window(nullptr), renderer(nullptr), isRunning(false), background(nullptr), 
-      player(this), tappingSystem(&player, &bossBattle), ui(nullptr, nullptr), bossBattle(&player), 
+      player(this), tappingSystem(&player, &bossBattle),  ui(nullptr, nullptr), bossBattle(&player), 
       challenge(), challengeTimer(0), isBossMusicPlaying(false), 
       gameCompleteTexture(nullptr), gameComplete(false) {
     srand(static_cast<unsigned int>(time(nullptr)));

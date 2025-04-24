@@ -2,7 +2,7 @@
 
 BossBattle::BossBattle(Player* player) 
     : player(player), active(false), won(false), lost(false), 
-      timer(0), requiredTaps(0), currentTaps(0) {}
+      timer(0.0f), requiredTaps(727.0f), currentTaps(0) {}
 
 void BossBattle::start() {
     active = true;
@@ -14,7 +14,7 @@ void BossBattle::start() {
 
 void BossBattle::setBossStats(float health, float damage) {
     // Theo logic trong Game.cpp, health là thời gian (60 giây), damage không dùng
-    timer = health; // Thời gian bossfight (60 giây)
+    // timer = health; // Thời gian bossfight (60 giây)
     requiredTaps = 727; // Số lần tap cần thiết (theo Game.cpp)
     currentTaps = 0;
 }
@@ -24,17 +24,23 @@ void BossBattle::update(float deltaTime) {
 
     timer -= deltaTime;
     if (timer <= 0) {
-        if (currentTaps >= requiredTaps) {
-            won = true;
-        } else {
+        if (currentTaps < requiredTaps) {
+            active = false;
+            won = false;
             lost = true;
+        } else {
+            active = false;
+            won = true;
+            lost = false;  //note
         }
-        active = false;
     }
 }
 
 void BossBattle::addTap() {
-    currentTaps++;
+    if (active) {
+        currentTaps++;
+    }
+    // Nếu không active, không tăng currentTaps
 }
 
 int BossBattle::getCurrentTaps() const {
@@ -50,11 +56,13 @@ float BossBattle::getTimer() const {
 }
 
 void BossBattle::reset() {
-    active = false;
-    won = false;
-    lost = false;
-    timer = 0;
+    // Reset trạng thái bossfight để có thể đánh lại
+    start();
     currentTaps = 0;
+    timer = 60.0f; // Đặt lại thời gian mặc định là 60 giây
+    active = false; // Đặt lại trạng thái không hoạt động
+    won = false;   // Đặt lại trạng thái thắng
+    lost = false;  // Đặt lại trạng thái thua
 }
 
 bool BossBattle::isActive() const {
