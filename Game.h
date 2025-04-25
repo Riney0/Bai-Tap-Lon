@@ -50,6 +50,7 @@ private:
     SDL_Texture* gameCompleteTexture; // Ảnh "Game Complete"
     float gameCompleteTimer; // Thời gian hiển thị ảnh
     bool gameComplete; //trạng thái hoàn thành game
+    float deltaTime; // Thời gian giữa các khung hình
 };
 
 #endif

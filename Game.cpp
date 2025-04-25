@@ -72,6 +72,9 @@ bool Game::init() {
         return false;
     }
 
+    background.loadBossBackground("asset/bossfight_background.png");
+    background.setUseBossBackground(false); // Đặt mặc định là không dùng
+
     if (bossBattle.isActive()) {
         background.setUseBossBackground(true);
         background.loadBossBackground("asset/bossfight_background.png");
@@ -96,6 +99,7 @@ bool Game::init() {
     items.push_back(Item("Radient Hyper Boost", 5.0f, 30, 55));
 
     tappingSystem.setGame(this);
+    tappingSystem.setUI(&ui);
 
     isRunning = true;
     return true;
@@ -144,6 +148,7 @@ void Game::update(float deltaTime) {
                 isBossMusicPlaying = true;
             }
             background.setUseBossBackground(true);
+            std::cout << "Boss battle started, setUseBossBackground(true) called" << std::endl;
             ui.showBossMessage("Boss Level 5 Appears! Tap 727 times in 60 seconds!");
         }
 
@@ -183,7 +188,7 @@ void Game::render() {
     SDL_RenderClear(renderer);
 
     background.render();
-    ui.render(player, tappingSystem, items, bossBattle, challenge);
+    ui.render(player, tappingSystem, items, bossBattle, challenge, deltaTime);
 
     if (gameComplete) {  //note
         SDL_Rect dstRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -227,7 +232,7 @@ void Game::run() {
         }
 
         Uint32 currentTime = SDL_GetTicks();
-        float deltaTime = (currentTime - lastTime) / 1000.0f;
+        deltaTime = (currentTime - lastTime) / 1000.0f;
         lastTime = currentTime;
 
         update(deltaTime);

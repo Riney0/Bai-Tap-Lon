@@ -23,12 +23,15 @@ private:
     SDL_Texture* moTexture; // Hình ảnh cái mõ thường
     SDL_Texture* moVipTexture; // Hình ảnh cái mõ VIP (trong bossfight)
     SDL_Texture* itemTextures[3]; // Hình ảnh của 3 vật phẩm (Double Activitive, Radient Boost, Radient Hyper Boost)
+    SDL_Texture* memeTexture; // Hình ảnh meme
     SDL_Color whiteColor; // Màu trắng cho chữ
     SDL_Color blackColor; // Màu đen cho chữ
     SDL_Color blueColor;  // Màu xanh lam cho hộp activitive
     SDL_Color cyanColor;  // Màu xanh lam nhạt cho hộp radient
     std::string bossMessage; // Thông báo bossfight
     float messageTimer; // Thời gian hiển thị thông báo
+    static constexpr float MEME_FADE_DURATION = 0.3f; // Thời gian mờ dần của meme
+    float memeFadeTimer; // Thời gian còn lại để hiển thị meme
 
 public:
     UI(SDL_Renderer* renderer, Game* game);
@@ -38,7 +41,8 @@ public:
     void showBossMessage(const std::string& message); // Hiển thị thông báo bossfight
     void showLevelUpMessage(int level); // Hiển thị thông báo lên level (hiện tại không dùng, nhưng giữ lại)
     void handleInput(SDL_Event& event, Player& player, std::vector<Item>& items, BossBattle& bossBattle); // Xử lý input (mua vật phẩm)
-    void render(Player& player, TappingSystem& tappingSystem, std::vector<Item>& items, BossBattle& bossBattle, Challenge& challenge); // Vẽ giao diện
+    void render(Player& player, TappingSystem& tappingSystem, std::vector<Item>& items, BossBattle& bossBattle, Challenge& challenge, float deltaTime); // Vẽ giao diện
+    void triggerMemeEffect(); // Kích hoạt hiệu ứng meme
 };
 
 #endif

@@ -5,7 +5,8 @@
 
 Background::Background(SDL_Renderer* renderer) 
     : renderer(renderer), backgroundTexture(nullptr), scrollingLayer(nullptr), 
-      scrollingOffset(0), scrollingSpeed(45.0f), layerWidth(0), layerHeight(0) {}
+      bossBackgroundTexture(nullptr), scrollingOffset(0), scrollingSpeed(45.0f), 
+      layerWidth(0), layerHeight(0), useBossBackground(false) {}
 
 Background::~Background() {
     clean();
@@ -18,12 +19,14 @@ bool Background::loadTextures(const char* bgPath, const char* layerPath) {
         std::cerr << "Failed to load background image: " << IMG_GetError() << std::endl;
         return false;
     }
+
     backgroundTexture = SDL_CreateTextureFromSurface(renderer, bgSurface);
     if (!backgroundTexture) {
         std::cerr << "Failed to create background texture: " << SDL_GetError() << std::endl;
         SDL_FreeSurface(bgSurface);
         return false;
     }
+    SDL_SetTextureBlendMode(backgroundTexture, SDL_BLENDMODE_BLEND);
     SDL_FreeSurface(bgSurface);
 
     // Tải layer cuộn
@@ -38,6 +41,7 @@ bool Background::loadTextures(const char* bgPath, const char* layerPath) {
         SDL_FreeSurface(layerSurface);
         return false;
     }
+    SDL_SetTextureBlendMode(scrollingLayer, SDL_BLENDMODE_BLEND);
     // Lấy kích thước của layer
     SDL_QueryTexture(scrollingLayer, nullptr, nullptr, &layerWidth, &layerHeight);
     SDL_FreeSurface(layerSurface);
@@ -46,6 +50,10 @@ bool Background::loadTextures(const char* bgPath, const char* layerPath) {
 }
 
 void Background::loadBossBackground(const std::string& path) {
+    if (!renderer) {
+        std::cerr << "Renderer is null in loadBossBackground!" << std::endl;
+        return;
+    }
     SDL_Surface* bossSurface = IMG_Load(path.c_str());
     if (!bossSurface) {
         std::cerr << "Failed to load boss background image: " << IMG_GetError() << std::endl;
@@ -54,6 +62,9 @@ void Background::loadBossBackground(const std::string& path) {
     bossBackgroundTexture = SDL_CreateTextureFromSurface(renderer, bossSurface);
     if (!bossBackgroundTexture) {
         std::cerr << "Failed to create boss background texture: " << SDL_GetError() << std::endl;
+    } else {
+        std::cout << "Boss background texture loaded successfully: " << path << std::endl;
+        SDL_SetTextureBlendMode(bossBackgroundTexture, SDL_BLENDMODE_BLEND);
     }
     SDL_FreeSurface(bossSurface);
 }
@@ -69,6 +80,7 @@ void Background::loadBossBackground(const std::string& path) {
 
 void Background::setUseBossBackground(bool use) {
     useBossBackground = use;
+    std::cout << "setUseBossBackground called, useBossBackground = " << useBossBackground << std::endl;
 }
 
 void Background::update(float deltaTime) {
@@ -83,16 +95,20 @@ void Background::render() {
     // Vẽ background (dùng boss background nếu useBossBackground là true)
     SDL_Rect bgRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     if (useBossBackground && bossBackgroundTexture) {
+        std::cout << "Rendering boss background texture" << std::endl; //debug
         SDL_RenderCopy(renderer, bossBackgroundTexture, nullptr, &bgRect);
     } else {
+        std::cout << "Rendering normal background texture" << std::endl; //debug
         SDL_RenderCopy(renderer, backgroundTexture, nullptr, &bgRect);
     }
 
     // Vẽ layer cuộn (cuộn tuần hoàn)
-    SDL_Rect layerRect1 = {static_cast<int>(scrollingOffset), 0, layerWidth, layerHeight};
-    SDL_Rect layerRect2 = {static_cast<int>(scrollingOffset) + layerWidth, 0, layerWidth, layerHeight};
-    SDL_RenderCopy(renderer, scrollingLayer, nullptr, &layerRect1);
-    SDL_RenderCopy(renderer, scrollingLayer, nullptr, &layerRect2);
+    if (!useBossBackground) {
+        SDL_Rect layerRect1 = {static_cast<int>(scrollingOffset), 0, layerWidth, layerHeight};
+        SDL_Rect layerRect2 = {static_cast<int>(scrollingOffset) + layerWidth, 0, layerWidth, layerHeight};
+        SDL_RenderCopy(renderer, scrollingLayer, nullptr, &layerRect1);
+        SDL_RenderCopy(renderer, scrollingLayer, nullptr, &layerRect2);
+    }
 }
 
 void Background::clean() {

@@ -6,13 +6,14 @@
 
 UI::UI(SDL_Renderer* renderer, Game* game) 
     : game(game), renderer(renderer), titleFont(nullptr), textFont(nullptr), 
-      moTexture(nullptr), moVipTexture(nullptr), bossMessage(""), messageTimer(0.0f) {
+      moTexture(nullptr), moVipTexture(nullptr), memeTexture(nullptr), bossMessage(""), messageTimer(0.0f), memeFadeTimer(0.0f) {
     for (int i = 0; i < 3; i++) {
         itemTextures[i] = nullptr;
     }
     whiteColor = {255, 255, 255, 255}; // Màu trắng
     blueColor = {0, 128, 255, 255};    // Màu xanh lam
     cyanColor = {0, 255, 255, 255};    // Màu xanh lam nhạt
+    blackColor = {31, 46, 51, 255}; // Màu đen than
     loadResources(); // Tải font và hình ảnh
 }
 
@@ -51,7 +52,7 @@ void UI::loadResources() {
     }
 
     // Tải hình ảnh
-    moTexture = IMG_LoadTexture(renderer, "asset/mo.jpg");
+    moTexture = IMG_LoadTexture(renderer, "asset/mo.png");
     if (!moTexture) {
         std::cerr << "Failed to load mo texture: " << IMG_GetError() << std::endl;
     }
@@ -59,6 +60,11 @@ void UI::loadResources() {
     moVipTexture = IMG_LoadTexture(renderer, "asset/mo_vjp.png");
     if (!moVipTexture) {
         std::cerr << "Failed to load mo_vjp texture: " << IMG_GetError() << std::endl;
+    }
+
+    memeTexture = IMG_LoadTexture(renderer, "asset/bocchi_cum.jpg");
+    if (!memeTexture) {
+        std::cerr << "Failed to load meme texture: " << IMG_GetError() << std::endl;
     }
 
     itemTextures[0] = IMG_LoadTexture(renderer, "asset/x2_tap_item.png");
@@ -100,10 +106,15 @@ void UI::handleInput(SDL_Event& event, Player& player, std::vector<Item>& items,
     }
 }
 
-void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>& items, BossBattle& bossBattle, Challenge& challenge) {
+void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>& items, BossBattle& bossBattle, Challenge& challenge, float deltaTime) {
     // Nếu game đã hoàn thành, không vẽ UI
     if (game->isGameComplete()) {
         return;
+    }
+
+    // Kiểm tra deltaTime hợp lệ
+    if (deltaTime <= 0.0f) {
+        deltaTime = 0.016f; // Giả định 60 FPS nếu không hợp lệ
     }
 
     // 1. Vẽ tiêu đề "CHILLING LEVELING"
@@ -179,7 +190,55 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
     }
 
-    // 6. Vẽ hộp activitive và radient bên trên hộp trắng
+    // 6. Vẽ hình ảnh meme mỗi khi tap
+    // if (memeFadeTimer > 0 && memeTexture) {
+    //     memeFadeTimer -= deltaTime;
+    //     if (memeFadeTimer < 0) memeFadeTimer = 0;
+        
+    //     float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 255.0f;
+    //     if (alpha > 255.0f) alpha = 255.0f;
+    //     if (alpha < 0.0f) alpha = 0.0f;
+
+    //     Uint8 alphaByte = static_cast<Uint8>(alpha);
+    //     std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
+    //               << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
+    //               << ", deltaTime=" << deltaTime << std::endl;
+
+    //     // Đảm bảo texture hỗ trợ alpha blending
+    //     SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
+    //     SDL_SetTextureAlphaMod(memeTexture, alphaByte);
+    //     SDL_Rect memeRect = {0, 550, 200, 200};
+    //     // SDL_Rect memeRect = {0, 0, 1340, 750};
+    //     SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
+        
+    //     // Reset alpha để tránh ảnh hưởng texture khác
+    //     SDL_SetTextureAlphaMod(memeTexture, 255);
+    // }
+
+    if (memeFadeTimer > 0 && memeTexture) {
+        memeFadeTimer -= deltaTime;
+        if (memeFadeTimer < 0) memeFadeTimer = 0;
+        
+        float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 200.0f;
+        if (alpha > 200.0f) alpha = 200.0f;
+        if (alpha < 0.0f) alpha = 0.0f;
+
+        Uint8 alphaByte = static_cast<Uint8>(alpha);
+        std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
+                  << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
+                  << ", deltaTime=" << deltaTime << std::endl;
+
+        // Đảm bảo texture hỗ trợ alpha blending
+        SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(memeTexture, alphaByte);
+        SDL_Rect memeRect = {0, 0, 1340, 750};
+        SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
+        
+        // Reset alpha để tránh ảnh hưởng texture khác
+        SDL_SetTextureAlphaMod(memeTexture, 200);
+    }
+
+    // 7. Vẽ hộp activitive và radient bên trên hộp trắng
     SDL_Rect activitiveBox = {SCREEN_WIDTH - 200, 80, 180, 40};
     SDL_Rect radientBox = {SCREEN_WIDTH - 200, 110, 180, 40};
     SDL_SetRenderDrawColor(renderer, 0, 128, 255, 255); // Màu xanh lam
@@ -204,7 +263,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_FreeSurface(radientSurface);
     }
 
-    // 7. Vẽ thông báo bossfight (nếu có)
+    // 8. Vẽ thông báo bossfight (nếu có)
     if (messageTimer > 0) {
         SDL_Surface* messageSurface = TTF_RenderText_Blended(textFont, bossMessage.c_str(), blackColor);
         if (messageSurface) {
@@ -216,4 +275,9 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
         messageTimer -= 0.016f; // Giả định 60 FPS
     }
+}
+
+void UI::triggerMemeEffect() {
+    memeFadeTimer = MEME_FADE_DURATION;
+    std::cout << "UI::triggerMemeEffect called, memeFadeTimer set to " << MEME_FADE_DURATION << std::endl;
 }

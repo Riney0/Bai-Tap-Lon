@@ -1,5 +1,6 @@
 #include "TappingSystem.h"
 #include "Game.h"
+#include "UI.h"
 
 TappingSystem::TappingSystem(Player* player, BossBattle* bossBattle) 
     : game(nullptr), player(player), bossBattle(bossBattle), spacePressed(false) {
@@ -7,6 +8,11 @@ TappingSystem::TappingSystem(Player* player, BossBattle* bossBattle)
 
 void TappingSystem::setGame(Game* g) {
     game = g;
+}
+
+void TappingSystem::setUI(UI* ui) {
+    this->ui = ui;
+    std::cout << "TappingSystem::setUI called, ui = " << ui << std::endl;
 }
 
 void TappingSystem::update(float deltaTime) {
@@ -24,6 +30,10 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
             if (bossBattle->isActive()) {
                 bossBattle->addTap();
             }
+            if(ui) {
+                std::cout << "Mouse tap detected, calling triggerMemeEffect, ui=" << ui << std::endl;
+                ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
+            }
     }
 
     // Xử lý nhấn và thả phím cách (Spacebar)
@@ -36,6 +46,10 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
         }
         if (bossBattle->isActive()) {
             bossBattle->addTap();
+        }
+        if(ui) {
+            std::cout << "Space tap detected, calling triggerMemeEffect, ui=" << ui << std::endl;
+            ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
         }
     }
     if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_SPACE) {
