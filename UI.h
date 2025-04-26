@@ -28,6 +28,7 @@ private:
     SDL_Color blackColor; // Màu đen cho chữ
     SDL_Color blueColor;  // Màu xanh lam cho hộp activitive
     SDL_Color cyanColor;  // Màu xanh lam nhạt cho hộp radient
+    SDL_Color orangeColor; // Màu cam cho chữ
     std::string bossMessage; // Thông báo bossfight
     float messageTimer; // Thời gian hiển thị thông báo
     static constexpr float MEME_FADE_DURATION = 0.3f; // Thời gian mờ dần của meme

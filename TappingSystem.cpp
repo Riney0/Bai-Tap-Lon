@@ -12,7 +12,7 @@ void TappingSystem::setGame(Game* g) {
 
 void TappingSystem::setUI(UI* ui) {
     this->ui = ui;
-    std::cout << "TappingSystem::setUI called, ui = " << ui << std::endl;
+    std::cout << "TappingSystem::setUI called, ui = " << ui << std::endl; // debug
 }
 
 void TappingSystem::update(float deltaTime) {
@@ -24,6 +24,7 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             player->incrementTapCount(); // Tăng tapCount trong Player
             player->addActivitive(1.0f);
+            player->addRadient(1.0f); // Tăng radient mỗi lần tap
             if (game) {
                 game->playTapSound();
             }
@@ -31,7 +32,7 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
                 bossBattle->addTap();
             }
             if(ui) {
-                std::cout << "Mouse tap detected, calling triggerMemeEffect, ui=" << ui << std::endl;
+                // std::cout << "Mouse tap detected, calling triggerMemeEffect, ui=" << ui << std::endl; // debug
                 ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
             }
     }
@@ -41,6 +42,7 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
         spacePressed = true;
         player->incrementTapCount(); // Tăng tapCount trong Player
         player->addActivitive(1.0f);
+        player->addRadient(1.0f); // Tăng radient mỗi lần tap
         if (game) {
             game->playTapSound();
         }
@@ -48,7 +50,7 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
             bossBattle->addTap();
         }
         if(ui) {
-            std::cout << "Space tap detected, calling triggerMemeEffect, ui=" << ui << std::endl;
+            // std::cout << "Space tap detected, calling triggerMemeEffect, ui=" << ui << std::endl; // debug
             ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
         }
     }

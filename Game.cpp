@@ -94,9 +94,9 @@ bool Game::init() {
     ui = UI(renderer, this);
     ui.loadResources();
 
-    items.push_back(Item("Double Activitive", 2.0f, 45, 100));
-    items.push_back(Item("Radient Boost", 2.0f, 60, 50));
-    items.push_back(Item("Radient Hyper Boost", 5.0f, 30, 55));
+    items.push_back(Item("X2 Activitive", 2.0f, 45, 100));
+    items.push_back(Item("X2 Radient", 2.0f, 60, 50));
+    items.push_back(Item("X5 Radient", 5.0f, 30, 55));
 
     tappingSystem.setGame(this);
     tappingSystem.setUI(&ui);
@@ -110,9 +110,9 @@ void Game::reset() {
     challenge = Challenge();
     bossBattle = BossBattle(&player);
     items.clear();
-    items.push_back(Item("Double Activitive", 2.0f, 45, 100));
-    items.push_back(Item("Radient Boost", 2.0f, 60, 50));
-    items.push_back(Item("Radient Hyper Boost", 5.0f, 30, 55));
+    items.push_back(Item("X2 Activitive", 2.0f, 45, 100));
+    items.push_back(Item("X2 Boost", 2.0f, 60, 50));
+    items.push_back(Item("X5 Boost", 5.0f, 30, 55));
     challengeTimer = 0;
     isBossMusicPlaying = false;
     gameComplete = false;

@@ -14,6 +14,7 @@ UI::UI(SDL_Renderer* renderer, Game* game)
     blueColor = {0, 128, 255, 255};    // Màu xanh lam
     cyanColor = {0, 255, 255, 255};    // Màu xanh lam nhạt
     blackColor = {31, 46, 51, 255}; // Màu đen than
+    orangeColor = {251, 175, 0, 255}; // Màu cam
     loadResources(); // Tải font và hình ảnh
 }
 
@@ -123,8 +124,8 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     if (titleSurface1 && titleSurface2) {
         SDL_Texture* titleTexture1 = SDL_CreateTextureFromSurface(renderer, titleSurface1);
         SDL_Texture* titleTexture2 = SDL_CreateTextureFromSurface(renderer, titleSurface2);
-        SDL_Rect titleRect1 = {10, 10, titleSurface1->w, titleSurface1->h};
-        SDL_Rect titleRect2 = {10, 10 + titleSurface1->h, titleSurface2->w, titleSurface2->h};
+        SDL_Rect titleRect1 = {15, 10, titleSurface1->w, titleSurface1->h};
+        SDL_Rect titleRect2 = {15, 10 + titleSurface1->h, titleSurface2->w, titleSurface2->h};
         SDL_RenderCopy(renderer, titleTexture1, nullptr, &titleRect1);
         SDL_RenderCopy(renderer, titleTexture2, nullptr, &titleRect2);
         SDL_DestroyTexture(titleTexture1);
@@ -169,14 +170,27 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_RenderFillRect(renderer, &itemRect);
 
         // Vẽ tên vật phẩm và giá
-        std::string itemText = items[i].getName() + " (" + std::to_string(items[i].getCost()) + " Radient)";
-        SDL_Surface* itemSurface = TTF_RenderText_Blended(textFont, itemText.c_str(), whiteColor);
-        if (itemSurface) {
-            SDL_Texture* itemTexture = SDL_CreateTextureFromSurface(renderer, itemSurface);
-            SDL_Rect itemTextRect = {SCREEN_WIDTH - 180, 210 + i * 100, itemSurface->w, itemSurface->h};
+        std::string itemText = items[i].getName(); // + " (" + std::to_string(items[i].getCost()) + " Radient)";
+        std::string itemPrice = std::to_string(items[i].getCost());
+        SDL_Surface* itemSurface1 = TTF_RenderText_Blended(textFont, itemText.c_str(), blackColor);
+
+        // In ra tên vật phẩm
+        if (itemSurface1) {
+            SDL_Texture* itemTexture = SDL_CreateTextureFromSurface(renderer, itemSurface1);
+            SDL_Rect itemTextRect = {SCREEN_WIDTH - 180, 210 + i * 100, itemSurface1->w, itemSurface1->h};
             SDL_RenderCopy(renderer, itemTexture, nullptr, &itemTextRect);
             SDL_DestroyTexture(itemTexture);
-            SDL_FreeSurface(itemSurface);
+            SDL_FreeSurface(itemSurface1);
+        }
+
+        // In ra tiền vật phẩm
+        SDL_Surface* itemSurface2 = TTF_RenderText_Blended(textFont, itemPrice.c_str(), blackColor);
+        if (itemSurface2) {
+            SDL_Texture* itemTexture = SDL_CreateTextureFromSurface(renderer, itemSurface2);
+            SDL_Rect itemTextRect = {SCREEN_WIDTH - 180, 235 + i * 100, itemSurface2->w, itemSurface2->h};
+            SDL_RenderCopy(renderer, itemTexture, nullptr, &itemTextRect);
+            SDL_DestroyTexture(itemTexture);
+            SDL_FreeSurface(itemSurface2);
         }
     }
 
@@ -185,35 +199,12 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         if (items[i].isActive() && itemTextures[i]) {
             float alpha = (items[i].getRemainingTime() / items[i].getDuration()) * 255; // Tính độ mờ
             SDL_SetTextureAlphaMod(itemTextures[i], static_cast<Uint8>(alpha));
-            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 250, 200 + i * 100, 200, 200}; // Kích thước giả định 100x100
+            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 650 + i * 85, 150 + i * 160, 230, 230};
             SDL_RenderCopy(renderer, itemTextures[i], nullptr, &itemEffectRect);
         }
     }
 
     // 6. Vẽ hình ảnh meme mỗi khi tap
-    // if (memeFadeTimer > 0 && memeTexture) {
-    //     memeFadeTimer -= deltaTime;
-    //     if (memeFadeTimer < 0) memeFadeTimer = 0;
-        
-    //     float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 255.0f;
-    //     if (alpha > 255.0f) alpha = 255.0f;
-    //     if (alpha < 0.0f) alpha = 0.0f;
-
-    //     Uint8 alphaByte = static_cast<Uint8>(alpha);
-    //     std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
-    //               << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
-    //               << ", deltaTime=" << deltaTime << std::endl;
-
-    //     // Đảm bảo texture hỗ trợ alpha blending
-    //     SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
-    //     SDL_SetTextureAlphaMod(memeTexture, alphaByte);
-    //     SDL_Rect memeRect = {0, 550, 200, 200};
-    //     // SDL_Rect memeRect = {0, 0, 1340, 750};
-    //     SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
-        
-    //     // Reset alpha để tránh ảnh hưởng texture khác
-    //     SDL_SetTextureAlphaMod(memeTexture, 255);
-    // }
 
     if (memeFadeTimer > 0 && memeTexture) {
         memeFadeTimer -= deltaTime;
@@ -224,11 +215,11 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         if (alpha < 0.0f) alpha = 0.0f;
 
         Uint8 alphaByte = static_cast<Uint8>(alpha);
-        std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
-                  << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
-                  << ", deltaTime=" << deltaTime << std::endl;
+        // std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
+        //           << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
+        //           << ", deltaTime=" << deltaTime << std::endl;
 
-        // Đảm bảo texture hỗ trợ alpha blending
+        // Alpha blending
         SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(memeTexture, alphaByte);
         SDL_Rect memeRect = {0, 0, 1340, 750};
@@ -239,8 +230,8 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     }
 
     // 7. Vẽ hộp activitive và radient bên trên hộp trắng
-    SDL_Rect activitiveBox = {SCREEN_WIDTH - 200, 80, 180, 40};
-    SDL_Rect radientBox = {SCREEN_WIDTH - 200, 110, 180, 40};
+    SDL_Rect activitiveBox = {SCREEN_WIDTH - 200, 100, 180, 40};
+    SDL_Rect radientBox = {SCREEN_WIDTH - 200, 135, 180, 40};
     SDL_SetRenderDrawColor(renderer, 0, 128, 255, 255); // Màu xanh lam
     SDL_RenderFillRect(renderer, &activitiveBox);
     SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Màu xanh lam nhạt
@@ -253,8 +244,8 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     if (activitiveSurface && radientSurface) {
         SDL_Texture* activitiveTexture = SDL_CreateTextureFromSurface(renderer, activitiveSurface);
         SDL_Texture* radientTexture = SDL_CreateTextureFromSurface(renderer, radientSurface);
-        SDL_Rect activitiveTextRect = {SCREEN_WIDTH - 190, 85, activitiveSurface->w, activitiveSurface->h};
-        SDL_Rect radientTextRect = {SCREEN_WIDTH - 190, 115, radientSurface->w, radientSurface->h};
+        SDL_Rect activitiveTextRect = {SCREEN_WIDTH - 190, 102, activitiveSurface->w, activitiveSurface->h};
+        SDL_Rect radientTextRect = {SCREEN_WIDTH - 190, 140, radientSurface->w, radientSurface->h};
         SDL_RenderCopy(renderer, activitiveTexture, nullptr, &activitiveTextRect);
         SDL_RenderCopy(renderer, radientTexture, nullptr, &radientTextRect);
         SDL_DestroyTexture(activitiveTexture);
@@ -275,9 +266,27 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
         messageTimer -= 0.016f; // Giả định 60 FPS
     }
+
+    // 9. Viết hướng dẫn game
+    std::string guideText1 = "Press Space or left mouse to tap!";
+    std::string guideText2 = "Click on the items to buy!";
+    SDL_Surface* guideSurface1 = TTF_RenderText_Blended(textFont, guideText1.c_str(), orangeColor);
+    SDL_Surface* guideSurface2 = TTF_RenderText_Blended(textFont, guideText2.c_str(), orangeColor);
+    if(guideSurface1 && guideSurface2) {
+        SDL_Texture* guideTexture1 = SDL_CreateTextureFromSurface(renderer, guideSurface1);
+        SDL_Texture* guideTexture2 = SDL_CreateTextureFromSurface(renderer, guideSurface2);
+        SDL_Rect guideRect1 = {SCREEN_WIDTH - 400, SCREEN_HEIGHT - 80, guideSurface1->w, guideSurface1->h};
+        SDL_Rect guideRect2 = {SCREEN_WIDTH - 400, SCREEN_HEIGHT - 50, guideSurface2->w, guideSurface2->h};
+        SDL_RenderCopy(renderer, guideTexture1, nullptr, &guideRect1);
+        SDL_RenderCopy(renderer, guideTexture2, nullptr, &guideRect2);
+        SDL_DestroyTexture(guideTexture1);
+        SDL_DestroyTexture(guideTexture2);
+        SDL_FreeSurface(guideSurface1);
+        SDL_FreeSurface(guideSurface2);
+    }
 }
 
 void UI::triggerMemeEffect() {
     memeFadeTimer = MEME_FADE_DURATION;
-    std::cout << "UI::triggerMemeEffect called, memeFadeTimer set to " << MEME_FADE_DURATION << std::endl;
+    // std::cout << "UI::triggerMemeEffect called, memeFadeTimer set to " << MEME_FADE_DURATION << std::endl;
 }

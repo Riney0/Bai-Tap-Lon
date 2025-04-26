@@ -6,7 +6,7 @@
 
 Player::Player(Game* game) 
     : game(game), activitive(0), radient(0), level(0), tapCount(0), moMultiplier(1.0f), 
-      activitiveMultiplier(1.5f), radientMultiplier(1.5f), previousLevel(0) {}
+      activitiveMultiplier(1.5f), radientMultiplier(2.0f), previousLevel(0) {}
 
 void Player::tapMo() {
     float activitiveGained = BASE_ACTIVITIVE_PER_TAP * moMultiplier * activitiveMultiplier;
@@ -43,11 +43,11 @@ void Player::tapMo() {
 
 void Player::checkLevelUp() {
     int newLevel = 0;
-    if (activitive >= 500) newLevel = 5;
-    else if (activitive >= 400) newLevel = 4;
-    else if (activitive >= 300) newLevel = 3;
-    else if (activitive >= 200) newLevel = 2;
-    else if (activitive >= 100) newLevel = 1;
+    if (activitive >= 5000) newLevel = 5;
+    else if (activitive >= 4000) newLevel = 4;
+    else if (activitive >= 3000) newLevel = 3;
+    else if (activitive >= 2000) newLevel = 2;
+    else if (activitive >= 1000) newLevel = 1;
 
     if (newLevel > previousLevel) {
         level = newLevel;

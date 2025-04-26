@@ -95,10 +95,10 @@ void Background::render() {
     // Vẽ background (dùng boss background nếu useBossBackground là true)
     SDL_Rect bgRect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     if (useBossBackground && bossBackgroundTexture) {
-        std::cout << "Rendering boss background texture" << std::endl; //debug
+        // std::cout << "Rendering boss background texture" << std::endl; //debug
         SDL_RenderCopy(renderer, bossBackgroundTexture, nullptr, &bgRect);
     } else {
-        std::cout << "Rendering normal background texture" << std::endl; //debug
+        // std::cout << "Rendering normal background texture" << std::endl; //debug
         SDL_RenderCopy(renderer, backgroundTexture, nullptr, &bgRect);
     }
 
