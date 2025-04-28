@@ -118,6 +118,33 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         deltaTime = 0.016f; // Giả định 60 FPS nếu không hợp lệ
     }
 
+    // Đảo 6 lên trước để không bị đè lên các thành phần khác
+
+    // 6. Vẽ hình ảnh meme mỗi khi tap
+
+    if (memeFadeTimer > 0 && memeTexture) {
+        memeFadeTimer -= deltaTime;
+        if (memeFadeTimer < 0) memeFadeTimer = 0;
+        
+        float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 200.0f;
+        if (alpha > 200.0f) alpha = 200.0f;
+        if (alpha < 0.0f) alpha = 0.0f;
+
+        Uint8 alphaByte = static_cast<Uint8>(alpha);
+        // std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
+        //           << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
+        //           << ", deltaTime=" << deltaTime << std::endl;
+
+        // Alpha blending
+        SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(memeTexture, alphaByte);
+        SDL_Rect memeRect = {0, 0, 1340, 750};
+        SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
+        
+        // Reset alpha để tránh ảnh hưởng texture khác
+        SDL_SetTextureAlphaMod(memeTexture, 200);
+    }
+
     // 1. Vẽ tiêu đề "CHILLING LEVELING"
     SDL_Surface* titleSurface1 = TTF_RenderText_Blended(titleFont, "CHILLING", blackColor);
     SDL_Surface* titleSurface2 = TTF_RenderText_Blended(titleFont, "       LEVELING", blackColor); // 7 dấu cách
@@ -199,34 +226,9 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         if (items[i].isActive() && itemTextures[i]) {
             float alpha = (items[i].getRemainingTime() / items[i].getDuration()) * 255; // Tính độ mờ
             SDL_SetTextureAlphaMod(itemTextures[i], static_cast<Uint8>(alpha));
-            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 650 + i * 85, 150 + i * 160, 230, 230};
+            SDL_Rect itemEffectRect = {SCREEN_WIDTH / 2 - 650 + i * 120, 150 + i * 160, 230, 230};
             SDL_RenderCopy(renderer, itemTextures[i], nullptr, &itemEffectRect);
         }
-    }
-
-    // 6. Vẽ hình ảnh meme mỗi khi tap
-
-    if (memeFadeTimer > 0 && memeTexture) {
-        memeFadeTimer -= deltaTime;
-        if (memeFadeTimer < 0) memeFadeTimer = 0;
-        
-        float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 200.0f;
-        if (alpha > 200.0f) alpha = 200.0f;
-        if (alpha < 0.0f) alpha = 0.0f;
-
-        Uint8 alphaByte = static_cast<Uint8>(alpha);
-        // std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
-        //           << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
-        //           << ", deltaTime=" << deltaTime << std::endl;
-
-        // Alpha blending
-        SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(memeTexture, alphaByte);
-        SDL_Rect memeRect = {0, 0, 1340, 750};
-        SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
-        
-        // Reset alpha để tránh ảnh hưởng texture khác
-        SDL_SetTextureAlphaMod(memeTexture, 200);
     }
 
     // 7. Vẽ hộp activitive và radient bên trên hộp trắng
@@ -267,11 +269,38 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         messageTimer -= 0.016f; // Giả định 60 FPS
     }
 
-    // 9. Viết hướng dẫn game
+    // 9. Viết trạng thái thử thách (nếu có)
+    if (!challenge.isActive()) return; // Chỉ hiển thị khi thử thách đang active
+
+    // Tạo chuỗi văn bản: "Challenge: Tap XX times in XX.0s (xx/XX)"
+    std::string challengeText = "Challenge: Tap " + std::to_string(challenge.getRequiredTaps()) +
+                                " times in " + std::to_string(static_cast<int>(challenge.getTimer())) +
+                                "s (" + std::to_string(challenge.getCurrentTaps()) + "/" +
+                                std::to_string(challenge.getRequiredTaps()) + ")";
+
+    // Render văn bản
+    SDL_Surface* challengeSurface = TTF_RenderText_Blended(textFont, challengeText.c_str(), blackColor);
+    if (challengeSurface) {
+        SDL_Texture* challengeTexture = SDL_CreateTextureFromSurface(renderer, challengeSurface);
+        if (challengeTexture) {
+            // Hiển thị ở giữa trên cùng của màn hình
+            SDL_Rect challengeRect = {
+                (SCREEN_WIDTH - challengeSurface->w) / 2, // Căn giữa theo chiều ngang
+                120, // Cách đỉnh màn hình 50 pixel
+                challengeSurface->w,
+                challengeSurface->h
+            };
+            SDL_RenderCopy(renderer, challengeTexture, nullptr, &challengeRect);
+            SDL_DestroyTexture(challengeTexture);
+        }
+        SDL_FreeSurface(challengeSurface);
+    }
+
+    // 10. Viết hướng dẫn game
     std::string guideText1 = "Press Space or left mouse to tap!";
     std::string guideText2 = "Click on the items to buy!";
-    SDL_Surface* guideSurface1 = TTF_RenderText_Blended(textFont, guideText1.c_str(), orangeColor);
-    SDL_Surface* guideSurface2 = TTF_RenderText_Blended(textFont, guideText2.c_str(), orangeColor);
+    SDL_Surface* guideSurface1 = TTF_RenderText_Blended(textFont, guideText1.c_str(), blueColor);
+    SDL_Surface* guideSurface2 = TTF_RenderText_Blended(textFont, guideText2.c_str(), blueColor);
     if(guideSurface1 && guideSurface2) {
         SDL_Texture* guideTexture1 = SDL_CreateTextureFromSurface(renderer, guideSurface1);
         SDL_Texture* guideTexture2 = SDL_CreateTextureFromSurface(renderer, guideSurface2);

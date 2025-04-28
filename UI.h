@@ -31,7 +31,7 @@ private:
     SDL_Color orangeColor; // Màu cam cho chữ
     std::string bossMessage; // Thông báo bossfight
     float messageTimer; // Thời gian hiển thị thông báo
-    static constexpr float MEME_FADE_DURATION = 0.3f; // Thời gian mờ dần của meme
+    static constexpr float MEME_FADE_DURATION = 0.25f; // Thời gian mờ dần của meme
     float memeFadeTimer; // Thời gian còn lại để hiển thị meme
 
 public:

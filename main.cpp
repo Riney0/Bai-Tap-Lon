@@ -14,14 +14,10 @@ int main(int argc, char* argv[]) {
     // Chạy game
     game.run();
 
-    // // giữ console mở
-    // std::cout << "Press Enter to exit..." << std::endl;
-    // std::cin.get();
-
     return 0;
 }
 
 
 // ĐM GAME LỒN ĐM GAME LỒN ĐM GAME LÔN
-// TOI BI NGu
+// TOI BI NGU
 // g++ main.cpp Game.cpp UI.cpp TappingSystem.cpp BossBattle.cpp Challenge.cpp Player.cpp Item.cpp Background.cpp AudioManager.cpp -o game -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf

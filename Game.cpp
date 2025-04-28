@@ -5,7 +5,7 @@
 
 Game::Game() 
     : window(nullptr), renderer(nullptr), isRunning(false), background(nullptr), 
-      player(this), tappingSystem(&player, &bossBattle),  ui(nullptr, nullptr), bossBattle(&player), 
+      player(this), tappingSystem(&player, &bossBattle, &challenge),  ui(nullptr, nullptr), bossBattle(&player), 
       challenge(), challengeTimer(0), isBossMusicPlaying(false), 
       gameCompleteTexture(nullptr), gameComplete(false) {
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -59,9 +59,10 @@ bool Game::init() {
         return false;
     }
 
-    audioManager.loadBackgroundMusic("asset/bgm.flac");
-    audioManager.loadBossMusic("asset/bossfight_music.flac");
-    audioManager.loadEndGameMusic("asset/endgame_music.mp3");
+    audioManager.loadBackgroundMusic("asset/bgm.mp3");
+    // audioManager.loadBossMusic("asset/bossfight_music.flac");
+    audioManager.loadBossMusic("asset/bossfight_music.mp3");
+    audioManager.loadEndGameMusic("asset/endgame_music(1).mp3");
     audioManager.loadSoundEffect("tap", "asset/tap_sound.wav");
     audioManager.loadSoundEffect("buy", "asset/buy_sound.wav");
     audioManager.playBackgroundMusic(-1);
@@ -72,7 +73,7 @@ bool Game::init() {
         return false;
     }
 
-    background.loadBossBackground("asset/bossfight_background.png");
+    background.loadBossBackground("asset/bossfight_background.jpg");
     background.setUseBossBackground(false); // Đặt mặc định là không dùng
 
     if (bossBattle.isActive()) {
@@ -85,7 +86,8 @@ bool Game::init() {
 
     // background.loadBossBackground("asset/bossfight_background.png");
 
-    gameCompleteTexture = IMG_LoadTexture(renderer, "asset/game_complete.png");
+    // gameCompleteTexture = IMG_LoadTexture(renderer, "asset/game_complete.png");
+    gameCompleteTexture = IMG_LoadTexture(renderer, "asset/YEAH!!!!!!!.png");
     if (!gameCompleteTexture) {
         std::cerr << "Failed to load game complete texture: " << IMG_GetError() << std::endl;
         return false;
@@ -94,9 +96,9 @@ bool Game::init() {
     ui = UI(renderer, this);
     ui.loadResources();
 
-    items.push_back(Item("X2 Activitive", 2.0f, 45, 100));
-    items.push_back(Item("X2 Radient", 2.0f, 60, 50));
-    items.push_back(Item("X5 Radient", 5.0f, 30, 55));
+    items.push_back(Item("X2 Radient", 2.0f, 25, 300));
+    items.push_back(Item("X2 Activitive", 2.0f, 30, 100));
+    items.push_back(Item("X5 Activitive", 5.0f, 20, 155));
 
     tappingSystem.setGame(this);
     tappingSystem.setUI(&ui);

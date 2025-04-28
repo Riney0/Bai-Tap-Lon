@@ -49,6 +49,10 @@ void Challenge::addTap() {
     }
 }
 
+int Challenge::getRequiredTaps() const {
+    return requiredTaps;
+}
+
 int Challenge::getCurrentTaps() const {
     return currentTaps;
 }
@@ -67,4 +71,8 @@ float Challenge::getActivitiveReward() const {
 
 float Challenge::getRadientReward() const {
     return radientReward;
+}
+
+float Challenge::getTimer() const {
+    return timer;
 }
