@@ -125,22 +125,24 @@ void Game::reset() {
 void Game::update(float deltaTime) {
     background.update(deltaTime);
 
-    if (!gameComplete) {  //note
-        challengeTimer += deltaTime;
-        if (challengeTimer >= 60.0f && !challenge.isActive() && !bossBattle.isActive()) {
-            challenge.start();
-            challengeTimer = 0.0f;
-        }
+    // player.update(deltaTime);
 
-        if (challenge.isActive()) {
-            challenge.update(deltaTime);
-            if (challenge.isCompleted()) {
-                player.addRadient(challenge.getRadientReward());
-                player.addActivitive(challenge.getActivitiveReward());
-                ui.showLevelUpMessage(0);
-                player.checkLevelUp();
-            }
-        }
+    if (!gameComplete) {  //note
+        // challengeTimer += deltaTime;
+        // if (challengeTimer >= 60.0f && !challenge.isActive() && !bossBattle.isActive()) {
+        //     challenge.start();
+        //     challengeTimer = 0.0f;
+        // }
+
+        // if (challenge.isActive()) {
+        //     challenge.update(deltaTime);
+        //     if (challenge.isCompleted()) {
+        //         player.addRadient(challenge.getRadientReward());
+        //         player.addActivitive(challenge.getActivitiveReward());
+        //         ui.showLevelUpMessage(0);
+        //         player.checkLevelUp();
+        //     }
+        // }
 
         if (player.getLevel() >= 5 && !bossBattle.isActive() && !bossBattle.isWon() && !bossBattle.isLost()) {
             bossBattle.start();
@@ -174,6 +176,26 @@ void Game::update(float deltaTime) {
 
         for (auto& item : items) {
             item.update(deltaTime);
+        }
+
+        challenge.update(deltaTime);
+
+        if (!bossBattle.isActive() && !challenge.isActive()) {
+            challengeTimer += deltaTime;
+        }
+
+        if (challengeTimer >= 60 && !challenge.isActive() && !bossBattle.isActive()) {
+            challenge.start();
+            challengeTimer = 0.0f;
+        }
+
+        if (challenge.isCompleted()) {
+            player.addRadient(challenge.getRadientReward());
+            player.addActivitive(challenge.getActivitiveReward());
+            ui.showLevelUpMessage(0);
+            player.checkLevelUp();
+            challengeTimer = 0.0f; // Reset challenge timer
+            challenge.complete(); // Đánh dấu thử thách đã hoàn thành
         }
 
         player.checkLevelUp();

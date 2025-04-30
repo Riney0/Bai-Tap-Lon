@@ -17,6 +17,7 @@ public:
     int getTapCount() const;
     void checkLevelUp();
     void incrementTapCount();
+    void update(float deltaTime); //note
 
 private:
     Game* game;

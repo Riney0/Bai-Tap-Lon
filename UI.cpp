@@ -6,7 +6,7 @@
 
 UI::UI(SDL_Renderer* renderer, Game* game) 
     : game(game), renderer(renderer), titleFont(nullptr), textFont(nullptr), 
-      moTexture(nullptr), moVipTexture(nullptr), memeTexture(nullptr), bossMessage(""), messageTimer(0.0f), memeFadeTimer(0.0f) {
+      moTexture(nullptr), moVipTexture(nullptr), moSupaVipTexture(nullptr), memeTexture(nullptr), bossMessage(""), messageTimer(0.0f), memeFadeTimer(0.0f) {
     for (int i = 0; i < 3; i++) {
         itemTextures[i] = nullptr;
     }
@@ -61,6 +61,11 @@ void UI::loadResources() {
     moVipTexture = IMG_LoadTexture(renderer, "asset/mo_vjp.png");
     if (!moVipTexture) {
         std::cerr << "Failed to load mo_vjp texture: " << IMG_GetError() << std::endl;
+    }
+
+    moSupaVipTexture = IMG_LoadTexture(renderer, "asset/mo_supa_vjp.jpg");
+    if (!moSupaVipTexture) {
+        std::cerr << "Failed to load mo_supa_vjp texture: " << IMG_GetError() << std::endl;
     }
 
     memeTexture = IMG_LoadTexture(renderer, "asset/bocchi_cum.jpg");
@@ -164,11 +169,29 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     // 2. Vẽ hình ảnh cái mõ
     SDL_Texture* currentMoTexture = bossBattle.isActive() ? moVipTexture : moTexture;
     if (currentMoTexture) {
-        SDL_Rect moRect = {545, 250, 250, 250}; // Kích thước giả định 200x200
+        SDL_Rect moRect = {545, 250, 250, 250}; // Kích thướ 250x250
         SDL_RenderCopy(renderer, currentMoTexture, nullptr, &moRect);
     }
 
-    // 3. Vẽ số lần tap và level bên dưới cái mõ
+    // 3. Vẽ hình cái mõ Supa VIP đè lên cái mõ vip khi vào bossfight
+    
+    if (bossBattle.isActive()){
+        if (moSupaVipTimer > 0 && moSupaVipTexture) {
+            moSupaVipTimer -= deltaTime;
+            if (moSupaVipTimer < 0) moSupaVipTimer = 0;
+            
+            float alpha = (moSupaVipTimer / SUPA_MO_APPEAR_TIME) * 255.0f;
+            if (alpha > 255.0f) alpha = 255.0f;
+            if (alpha < 0.0f) alpha = 0.0f;
+
+            Uint8 alphaByte = static_cast<Uint8>(alpha);
+            SDL_SetTextureAlphaMod(moSupaVipTexture, alphaByte);
+            SDL_Rect moSupaVipRect = {545, 250, 250, 250}; // Kích thước 250x250
+            SDL_RenderCopy(renderer, moSupaVipTexture, nullptr, &moSupaVipRect);
+        }
+    }
+
+    // 4. Vẽ số lần tap và level bên dưới cái mõ
     std::string tapText = "Taps: " + std::to_string(player.getTapCount());
     std::string levelText = "Level: " + std::to_string(player.getLevel());
     SDL_Surface* tapSurface = TTF_RenderText_Blended(textFont, tapText.c_str(), blackColor);
@@ -186,7 +209,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_FreeSurface(levelSurface);
     }
 
-    // 4. Vẽ hộp trắng bên phải và 3 ô vật phẩm
+    // 5. Vẽ hộp trắng bên phải và 3 ô vật phẩm
     SDL_Rect whiteBox = {SCREEN_WIDTH - 200, 150, 180, 350}; // Hộp trắng
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, &whiteBox);
@@ -221,7 +244,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
     }
 
-    // 5. Vẽ hình ảnh vật phẩm đã mua (bên trái, mờ dần)
+    // 7. Vẽ hình ảnh vật phẩm đã mua (bên trái, mờ dần)
     for (int i = 0; i < 3; i++) {
         if (items[i].isActive() && itemTextures[i]) {
             float alpha = (items[i].getRemainingTime() / items[i].getDuration()) * 255; // Tính độ mờ
@@ -231,7 +254,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
     }
 
-    // 7. Vẽ hộp activitive và radient bên trên hộp trắng
+    // 8. Vẽ hộp activitive và radient bên trên hộp trắng
     SDL_Rect activitiveBox = {SCREEN_WIDTH - 200, 100, 180, 40};
     SDL_Rect radientBox = {SCREEN_WIDTH - 200, 135, 180, 40};
     SDL_SetRenderDrawColor(renderer, 0, 128, 255, 255); // Màu xanh lam
@@ -256,7 +279,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_FreeSurface(radientSurface);
     }
 
-    // 8. Vẽ thông báo bossfight (nếu có)
+    // 9. Vẽ thông báo bossfight (nếu có)
     if (messageTimer > 0) {
         SDL_Surface* messageSurface = TTF_RenderText_Blended(textFont, bossMessage.c_str(), blackColor);
         if (messageSurface) {
@@ -267,33 +290,6 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
             SDL_FreeSurface(messageSurface);
         }
         messageTimer -= 0.016f; // Giả định 60 FPS
-    }
-
-    // 9. Viết trạng thái thử thách (nếu có)
-    if (!challenge.isActive()) return; // Chỉ hiển thị khi thử thách đang active
-
-    // Tạo chuỗi văn bản: "Challenge: Tap XX times in XX.0s (xx/XX)"
-    std::string challengeText = "Challenge: Tap " + std::to_string(challenge.getRequiredTaps()) +
-                                " times in " + std::to_string(static_cast<int>(challenge.getTimer())) +
-                                "s (" + std::to_string(challenge.getCurrentTaps()) + "/" +
-                                std::to_string(challenge.getRequiredTaps()) + ")";
-
-    // Render văn bản
-    SDL_Surface* challengeSurface = TTF_RenderText_Blended(textFont, challengeText.c_str(), blackColor);
-    if (challengeSurface) {
-        SDL_Texture* challengeTexture = SDL_CreateTextureFromSurface(renderer, challengeSurface);
-        if (challengeTexture) {
-            // Hiển thị ở giữa trên cùng của màn hình
-            SDL_Rect challengeRect = {
-                (SCREEN_WIDTH - challengeSurface->w) / 2, // Căn giữa theo chiều ngang
-                120, // Cách đỉnh màn hình 50 pixel
-                challengeSurface->w,
-                challengeSurface->h
-            };
-            SDL_RenderCopy(renderer, challengeTexture, nullptr, &challengeRect);
-            SDL_DestroyTexture(challengeTexture);
-        }
-        SDL_FreeSurface(challengeSurface);
     }
 
     // 10. Viết hướng dẫn game
@@ -313,9 +309,41 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_FreeSurface(guideSurface1);
         SDL_FreeSurface(guideSurface2);
     }
+
+    // 11. Viết trạng thái thử thách (nếu có)
+    if (!challenge.isActive()) return; // Chỉ hiển thị khi thử thách đang active
+
+    // Tạo chuỗi văn bản: "Challenge: Tap XX times in XX.0s (xx/XX)"
+    std::string challengeText = "Challenge: Tap " + std::to_string(challenge.getRequiredTaps()) +
+                                " times in " + std::to_string(static_cast<int>(challenge.getTimer())) +
+                                "s (" + std::to_string(challenge.getCurrentTaps()) + "/" +
+                                std::to_string(challenge.getRequiredTaps()) + ")";
+
+    // Render văn bản
+    SDL_Surface* challengeSurface = TTF_RenderText_Blended(textFont, challengeText.c_str(), blackColor);
+    if (challengeSurface) {
+        SDL_Texture* challengeTexture = SDL_CreateTextureFromSurface(renderer, challengeSurface);
+        if (challengeTexture) {
+            // Hiển thị ở giữa trên cùng của màn hình
+            SDL_Rect challengeRect = {
+                (SCREEN_WIDTH - challengeSurface->w) / 2, // Căn giữa theo chiều ngang
+                120, // Cách đỉnh màn hình 120 pixel
+                challengeSurface->w,
+                challengeSurface->h
+            };
+            SDL_RenderCopy(renderer, challengeTexture, nullptr, &challengeRect);
+            SDL_DestroyTexture(challengeTexture);
+        }
+        SDL_FreeSurface(challengeSurface);
+    }
 }
 
 void UI::triggerMemeEffect() {
     memeFadeTimer = MEME_FADE_DURATION;
     // std::cout << "UI::triggerMemeEffect called, memeFadeTimer set to " << MEME_FADE_DURATION << std::endl;
+}
+
+void UI::triggerSupaMoEffect() {
+    moSupaVipTimer = SUPA_MO_APPEAR_TIME;
+    // std::cout << "UI::triggerSupaMoEffect called, moSupaVipTimer set to " << SUPA_MO_APPEAR_TIME << std::endl;
 }

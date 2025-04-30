@@ -89,3 +89,10 @@ int Player::getTapCount() const { return tapCount; }
 void Player::incrementTapCount() {
     tapCount++; // Tăng số lần tap
 }
+
+void Player::update(float deltaTime) {  //note
+    // Cập nhật trạng thái của người chơi (nếu cần)
+    activitive += deltaTime * activitiveMultiplier; // Tăng activitive theo thời gian
+
+    checkLevelUp(); // Kiểm tra xem có lên level không
+}

@@ -22,6 +22,7 @@ private:
     TTF_Font* textFont;  // Font cho các chữ khác (Raleway_Regular)
     SDL_Texture* moTexture; // Hình ảnh cái mõ thường
     SDL_Texture* moVipTexture; // Hình ảnh cái mõ VIP (trong bossfight)
+    SDL_Texture* moSupaVipTexture; // Hình ảnh cái mõ Supa VIP (trong bossfight)
     SDL_Texture* itemTextures[3]; // Hình ảnh của 3 vật phẩm (Double Activitive, Radient Boost, Radient Hyper Boost)
     SDL_Texture* memeTexture; // Hình ảnh meme
     SDL_Color whiteColor; // Màu trắng cho chữ
@@ -33,6 +34,8 @@ private:
     float messageTimer; // Thời gian hiển thị thông báo
     static constexpr float MEME_FADE_DURATION = 0.25f; // Thời gian mờ dần của meme
     float memeFadeTimer; // Thời gian còn lại để hiển thị meme
+    static constexpr float SUPA_MO_APPEAR_TIME = 0.1f; // Thời gian hiển thị của cái mõ siêu vjp trước khi biến mất
+    float moSupaVipTimer; // Thời gian còn lại để hiển thị cái mõ Supa VIP (trong bossfight)
 
 public:
     UI(SDL_Renderer* renderer, Game* game);
@@ -44,6 +47,7 @@ public:
     void handleInput(SDL_Event& event, Player& player, std::vector<Item>& items, BossBattle& bossBattle); // Xử lý input (mua vật phẩm)
     void render(Player& player, TappingSystem& tappingSystem, std::vector<Item>& items, BossBattle& bossBattle, Challenge& challenge, float deltaTime); // Vẽ giao diện
     void triggerMemeEffect(); // Kích hoạt hiệu ứng meme
+    void triggerSupaMoEffect(); // Kích hoạt hiệu ứng cái mõ Supa VIP
 };
 
 #endif

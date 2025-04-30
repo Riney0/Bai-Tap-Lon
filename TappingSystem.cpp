@@ -48,12 +48,13 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
         if (bossBattle->isActive()) {
             bossBattle->addTap();
         }
-        if (challenge->isActive()) { // Thêm dòng này
+        if (challenge->isActive()) {
             challenge->addTap();
         }
         if(ui) {
             // std::cout << "Mouse tap detected, calling triggerMemeEffect, ui=" << ui << std::endl; // debug
             ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
+            ui->triggerSupaMoEffect(); // Hiện cái mõ siêu vip mỗi khi tap trong bossfight
         }
     }
 
@@ -92,6 +93,7 @@ void TappingSystem::handleTapInput(SDL_Event& event) {
         if(ui) {
             // std::cout << "Space tap detected, calling triggerMemeEffect, ui=" << ui << std::endl; // debug
             ui->triggerMemeEffect(); // Hiện meme mỗi khi tap
+            ui->triggerSupaMoEffect(); // Hiện cái mõ siêu vip mỗi khi tap trong bossfight
         }
     }
 

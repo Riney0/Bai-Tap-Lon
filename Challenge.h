@@ -18,6 +18,7 @@ public:
     void start();          // Bắt đầu thử thách
     void update(float deltaTime); // Cập nhật trạng thái thử thách
     void addTap();         // Tăng số lần tap khi người chơi gõ
+    void complete();    // Đánh dấu thử thách đã hoàn thành
     int getCurrentTaps() const; //Lấy số lần tap hiện tại
     int getRequiredTaps() const; // Lấy số lần tap cần thiết để hoàn thành
     bool isActive() const; // Kiểm tra thử thách có đang diễn ra không

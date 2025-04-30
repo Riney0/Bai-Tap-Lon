@@ -49,6 +49,11 @@ void Challenge::addTap() {
     }
 }
 
+void Challenge::complete() {
+    //active = false; // Kết thúc thử thách
+    completed = false; // Đánh dấu đã hoàn thành
+}
+
 int Challenge::getRequiredTaps() const {
     return requiredTaps;
 }
