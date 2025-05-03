@@ -20,6 +20,7 @@ private:
     SDL_Renderer* renderer;
     TTF_Font* titleFont; // Font cho tiêu đề "CHILLING LEVELING"
     TTF_Font* textFont;  // Font cho các chữ khác (Raleway_Regular)
+    SDL_Texture* moBackgoundTexture; // Hình nền cái mõ
     SDL_Texture* moTexture; // Hình ảnh cái mõ thường
     SDL_Texture* moVipTexture; // Hình ảnh cái mõ VIP (trong bossfight)
     SDL_Texture* moSupaVipTexture; // Hình ảnh cái mõ Supa VIP (trong bossfight)

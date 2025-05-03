@@ -13,9 +13,7 @@ void BossBattle::start() {
 }
 
 void BossBattle::setBossStats(float health, float damage) {
-    // Theo logic trong Game.cpp, health là thời gian (60 giây), damage không dùng
-    // timer = health; // Thời gian bossfight (60 giây)
-    requiredTaps = 727; // Số lần tap cần thiết (theo Game.cpp)
+    requiredTaps = 727; // Số lần tap cần thiết
     currentTaps = 0;
 }
 

@@ -31,7 +31,7 @@ UI::~UI() {
 
 void UI::loadResources() {
     if (!renderer) {
-        std::cerr << "Renderer is null! Cannot load resources." << std::endl;
+        // std::cerr << "Renderer is null! Cannot load resources." << std::endl;
         return;
     }
 
@@ -53,6 +53,8 @@ void UI::loadResources() {
     }
 
     // Tải hình ảnh
+    moBackgoundTexture = IMG_LoadTexture(renderer, "asset/mo_background.png");
+
     moTexture = IMG_LoadTexture(renderer, "asset/mo.png");
     if (!moTexture) {
         std::cerr << "Failed to load mo texture: " << IMG_GetError() << std::endl;
@@ -89,7 +91,7 @@ void UI::showBossMessage(const std::string& message) {
 }
 
 void UI::showLevelUpMessage(int level) {
-    // Hiện tại không dùng, nhưng giữ lại để mở rộng
+    // Bố sung sau
 }
 
 void UI::handleInput(SDL_Event& event, Player& player, std::vector<Item>& items, BossBattle& bossBattle) {
@@ -120,35 +122,38 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
 
     // Kiểm tra deltaTime hợp lệ
     if (deltaTime <= 0.0f) {
-        deltaTime = 0.016f; // Giả định 60 FPS nếu không hợp lệ
+        deltaTime = 0.016f; // 60 FPS nếu không hợ lệ
     }
 
     // Đảo 6 lên trước để không bị đè lên các thành phần khác
 
     // 6. Vẽ hình ảnh meme mỗi khi tap
 
-    if (memeFadeTimer > 0 && memeTexture) {
-        memeFadeTimer -= deltaTime;
-        if (memeFadeTimer < 0) memeFadeTimer = 0;
+    if (!bossBattle.isActive()){
+        if (memeFadeTimer > 0 && memeTexture) {
+            memeFadeTimer -= deltaTime;
+            if (memeFadeTimer < 0) memeFadeTimer = 0;
         
-        float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 200.0f;
-        if (alpha > 200.0f) alpha = 200.0f;
-        if (alpha < 0.0f) alpha = 0.0f;
+            float alpha = (memeFadeTimer / MEME_FADE_DURATION) * 200.0f;
+            if (alpha > 200.0f) alpha = 200.0f;
+            if (alpha < 0.0f) alpha = 0.0f;
 
-        Uint8 alphaByte = static_cast<Uint8>(alpha);
-        // std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
-        //           << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
-        //           << ", deltaTime=" << deltaTime << std::endl;
+            Uint8 alphaByte = static_cast<Uint8>(alpha);
+            // std::cout << "Rendering meme: memeFadeTimer=" << memeFadeTimer 
+            //           << ", alpha=" << alpha << ", alphaByte=" << static_cast<int>(alphaByte) 
+            //           << ", deltaTime=" << deltaTime << std::endl;
 
-        // Alpha blending
-        SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(memeTexture, alphaByte);
-        SDL_Rect memeRect = {0, 0, 1340, 750};
-        SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
+            // Alpha blending
+            SDL_SetTextureBlendMode(memeTexture, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureAlphaMod(memeTexture, alphaByte);
+            SDL_Rect memeRect = {0, 0, 1340, 750};
+            SDL_RenderCopy(renderer, memeTexture, nullptr, &memeRect);
         
-        // Reset alpha để tránh ảnh hưởng texture khác
-        SDL_SetTextureAlphaMod(memeTexture, 200);
+            // Reset alpha để tránh ảnh hưởng texture khác
+            SDL_SetTextureAlphaMod(memeTexture, 200);
+        }
     }
+
 
     // 1. Vẽ tiêu đề "CHILLING LEVELING"
     SDL_Surface* titleSurface1 = TTF_RenderText_Blended(titleFont, "CHILLING", blackColor);
@@ -166,10 +171,18 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         SDL_FreeSurface(titleSurface2);
     }
 
+    // Vẽ background mõ
+    SDL_Texture* moBackgroundTexture = moBackgoundTexture;
+    if (moBackgroundTexture) {
+        SDL_SetTextureAlphaMod(moBackgroundTexture, 170); // Đặt alpha cho background
+        SDL_Rect moBackgroundRect = {530, 235, 280, 280};
+        SDL_RenderCopy(renderer, moBackgroundTexture, nullptr, &moBackgroundRect);
+    }
+
     // 2. Vẽ hình ảnh cái mõ
     SDL_Texture* currentMoTexture = bossBattle.isActive() ? moVipTexture : moTexture;
     if (currentMoTexture) {
-        SDL_Rect moRect = {545, 250, 250, 250}; // Kích thướ 250x250
+        SDL_Rect moRect = {545, 250, 250, 250}; // Kích thước 250x250
         SDL_RenderCopy(renderer, currentMoTexture, nullptr, &moRect);
     }
 
@@ -191,7 +204,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
         }
     }
 
-    // 4. Vẽ số lần tap và level bên dưới cái mõ
+    // 4. Vẽ số lần tap và level bên trên cái mõ
     std::string tapText = "Taps: " + std::to_string(player.getTapCount());
     std::string levelText = "Level: " + std::to_string(player.getLevel());
     SDL_Surface* tapSurface = TTF_RenderText_Blended(textFont, tapText.c_str(), blackColor);
@@ -199,8 +212,8 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
     if (tapSurface && levelSurface) {
         SDL_Texture* tapTexture = SDL_CreateTextureFromSurface(renderer, tapSurface);
         SDL_Texture* levelTexture = SDL_CreateTextureFromSurface(renderer, levelSurface);
-        SDL_Rect tapRect = {545, 170, tapSurface->w, tapSurface->h};
-        SDL_Rect levelRect = {545, 200, levelSurface->w, levelSurface->h};
+        SDL_Rect tapRect = {545, 200, tapSurface->w, tapSurface->h};
+        SDL_Rect levelRect = {670, 200, levelSurface->w, levelSurface->h};
         SDL_RenderCopy(renderer, tapTexture, nullptr, &tapRect);
         SDL_RenderCopy(renderer, levelTexture, nullptr, &levelRect);
         SDL_DestroyTexture(tapTexture);

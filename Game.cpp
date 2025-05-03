@@ -62,7 +62,7 @@ bool Game::init() {
     audioManager.loadBackgroundMusic("asset/bgm.mp3");
     // audioManager.loadBossMusic("asset/bossfight_music.flac");
     audioManager.loadBossMusic("asset/bossfight_music.mp3");
-    audioManager.loadEndGameMusic("asset/endgame_music(1).mp3");
+    audioManager.loadEndGameMusic("asset/endgame_music(2).mp3");
     audioManager.loadSoundEffect("tap", "asset/tap_sound.wav");
     audioManager.loadSoundEffect("buy", "asset/buy_sound.wav");
     audioManager.playBackgroundMusic(-1);
