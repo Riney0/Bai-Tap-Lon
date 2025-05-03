@@ -69,15 +69,6 @@ void Background::loadBossBackground(const std::string& path) {
     SDL_FreeSurface(bossSurface);
 }
 
-// void Background::loadBossBackground(const std::string& path) {
-//     bossBackgroundTexture = IMG_LoadTexture(renderer, path.c_str());
-//     if (!bossBackgroundTexture) {
-//         std::cerr << "Failed to load boss background texture: " << IMG_GetError() << std::endl;
-//     } else {
-//         std::cerr << "Boss background texture loaded successfully: " << path << std::endl;
-//     }
-// }
-
 void Background::setUseBossBackground(bool use) {
     useBossBackground = use;
     std::cout << "setUseBossBackground called, useBossBackground = " << useBossBackground << std::endl;
