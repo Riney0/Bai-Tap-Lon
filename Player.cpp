@@ -10,20 +10,23 @@ Player::Player(Game* game)
 
 void Player::tapMo() {
     float activitiveGained = BASE_ACTIVITIVE_PER_TAP * moMultiplier * activitiveMultiplier;
-    float radientGained = (rand() % (10 - 3 + 1) + 3) * radientMultiplier;
+    float radientGained = (rand() % (5 - 2 + 1) + 2) * radientMultiplier;
 
     // Debug
-    std::cerr << "Radient Multiplier: " << radientMultiplier 
-              << ", Radient Gained: " << radientGained 
-              << ", Radient Before: " << radient;
+    // std::cerr << "Radient Multiplier: " << radientMultiplier 
+    //           << ", Radient Gained: " << radientGained 
+    //           << ", Radient Before: " << radient;
 
     // Áp dụng hiệu ứng vật phẩm
+
     for (const auto& item : game->getItems()) {
         if (item.isActive()) {
-            if (item.getName() == "Double Activitive") {
-                activitiveGained *= item.getMultiplier();
-            } else if (item.getName() == "Radient Boost") {
-                radientGained *= item.getMultiplier();
+            if (item.getName() == "X2 Radient") {
+                radientGained *= item.getMultiplier(); // Tăng radient theo vật phẩm
+            } else if (item.getName() == "X2 Activitive") {
+                activitiveGained *= item.getMultiplier(); // Tăng activitive theo vật phẩm
+            } else if (item.getName() == "X5 Activitive") {
+                activitiveGained *= item.getMultiplier(); // Tăng activitive theo vật phẩm
             }
         }
     }
@@ -43,7 +46,7 @@ void Player::tapMo() {
 
 void Player::checkLevelUp() {
     int newLevel = 0;
-    if (activitive >= 5000) newLevel = 5; // test
+    if (activitive >= 5000) newLevel = 5;
     else if (activitive >= 4000) newLevel = 4;
     else if (activitive >= 3000) newLevel = 3;
     else if (activitive >= 2000) newLevel = 2;
@@ -90,7 +93,7 @@ void Player::incrementTapCount() {
     tapCount++; // Tăng số lần tap
 }
 
-void Player::update(float deltaTime) {  //note
+void Player::update(float deltaTime) {
     // Cập nhật trạng thái của người chơi (nếu cần)
     activitive += deltaTime * activitiveMultiplier; // Tăng activitive theo thời gian
 

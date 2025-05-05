@@ -127,7 +127,7 @@ void Game::update(float deltaTime) {
 
     // player.update(deltaTime);
 
-    if (!gameComplete) {  //note
+    if (!gameComplete) {
         // challengeTimer += deltaTime;
         // if (challengeTimer >= 60.0f && !challenge.isActive() && !bossBattle.isActive()) {
         //     challenge.start();
@@ -184,7 +184,7 @@ void Game::update(float deltaTime) {
             challengeTimer += deltaTime;
         }
 
-        if (challengeTimer >= 60 && !challenge.isActive() && !bossBattle.isActive()) {
+        if (challengeTimer >= 20 && !challenge.isActive() && !bossBattle.isActive()) { // Challenge bắt đầu sau mỗi 20 giây
             challenge.start();
             challengeTimer = 0.0f;
         }
