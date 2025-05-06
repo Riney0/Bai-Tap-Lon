@@ -26,7 +26,6 @@ UI::~UI() {
     if (moVipTexture) SDL_DestroyTexture(moVipTexture);
     if (moSupaVipTexture) SDL_DestroyTexture(moSupaVipTexture);
     if (memeTexture) SDL_DestroyTexture(memeTexture);
-    if (nahIdWinTexture) SDL_DestroyTexture(nahIdWinTexture);
     if (moBackgoundTexture) SDL_DestroyTexture(moBackgoundTexture);
     
     for (int i = 0; i < 3; i++) {
@@ -79,11 +78,6 @@ void UI::loadResources() {
     memeTexture = IMG_LoadTexture(renderer, "asset/bocchi_cum.jpg");
     if (!memeTexture) {
         std::cerr << "Failed to load meme texture: " << IMG_GetError() << std::endl;
-    }
-
-    nahIdWinTexture = IMG_LoadTexture(renderer, "asset/nah_id_win.jpg");
-    if (!nahIdWinTexture) {
-        std::cerr << "Failed to load nahIdWin texture: " << IMG_GetError() << std::endl;
     }
 
     itemTextures[0] = IMG_LoadTexture(renderer, "asset/x2_tap_item.png");
