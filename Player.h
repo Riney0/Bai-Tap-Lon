@@ -7,8 +7,6 @@ class Player {
 public:
     Player(Game* game);
     void tapMo();
-    void convertActivitiveToRadient(float amount);
-    void upgradeMo(float cost, float activitiveMultiplier);
     void addRadient(float amount);
     void addActivitive(float amount);
     float getActivitive() const;
@@ -17,7 +15,7 @@ public:
     int getTapCount() const;
     void checkLevelUp();
     void incrementTapCount();
-    void update(float deltaTime); //note
+    void update(float deltaTime);
 
 private:
     Game* game;

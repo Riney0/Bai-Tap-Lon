@@ -11,12 +11,7 @@ Player::Player(Game* game)
 void Player::tapMo() {
     float activitiveGained = BASE_ACTIVITIVE_PER_TAP * moMultiplier * activitiveMultiplier;
     float radientGained = (rand() % (5 - 2 + 1) + 2) * radientMultiplier;
-
-    // Debug
-    // std::cerr << "Radient Multiplier: " << radientMultiplier 
-    //           << ", Radient Gained: " << radientGained 
-    //           << ", Radient Before: " << radient;
-
+    
     // Áp dụng hiệu ứng vật phẩm
 
     for (const auto& item : game->getItems()) {
@@ -61,19 +56,6 @@ void Player::checkLevelUp() {
     }
 }
 
-void Player::convertActivitiveToRadient(float amount) {
-    if (activitive >= amount) {
-        activitive -= amount;
-        radient += amount * ACTIVITIVE_TO_RADIENT_RATE;
-    }
-}
-
-void Player::upgradeMo(float cost, float activitiveMultiplier) {
-    if (radient >= cost) {
-        radient -= cost;
-        moMultiplier += activitiveMultiplier;
-    }
-}
 
 void Player::addRadient(float amount) {
     radient += amount;

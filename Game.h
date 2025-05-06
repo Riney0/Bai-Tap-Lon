@@ -49,7 +49,7 @@ private:
     bool isBossMusicPlaying;
     SDL_Texture* gameCompleteTexture; // Ảnh "Game Complete"
     float gameCompleteTimer; // Thời gian hiển thị ảnh
-    bool gameComplete; //trạng thái hoàn thành game
+    bool gameComplete; // Trạng thái hoàn thành game
     float deltaTime; // Thời gian giữa các khung hình
 };
 

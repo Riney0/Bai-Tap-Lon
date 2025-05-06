@@ -202,7 +202,7 @@ void Game::update(float deltaTime) {
 
     }
 
-    if (gameComplete && !Mix_PlayingMusic()) { //note
+    if (gameComplete && !Mix_PlayingMusic()) {
         isRunning = false;
     }
 }
@@ -214,7 +214,7 @@ void Game::render() {
     background.render();
     ui.render(player, tappingSystem, items, bossBattle, challenge, deltaTime);
 
-    if (gameComplete) {  //note
+    if (gameComplete) {
         SDL_Rect dstRect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
         SDL_RenderCopy(renderer, gameCompleteTexture, nullptr, &dstRect);
     }
@@ -249,10 +249,6 @@ void Game::run() {
                     }
                 }
             }
-        }
-
-        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_u) {
-            player.upgradeMo(50.0f, 2.0f);
         }
 
         Uint32 currentTime = SDL_GetTicks();

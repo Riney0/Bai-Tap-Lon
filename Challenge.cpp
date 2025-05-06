@@ -1,5 +1,5 @@
 #include "Challenge.h"
-#include <cstdlib> // Để dùng rand()
+#include <cstdlib>
 
 Challenge::Challenge() 
     : active(false), completed(false), duration(0.0f), timer(0.0f), 
@@ -13,8 +13,8 @@ void Challenge::start() {
     duration = 10.0f + (rand() % 21); // rand() % 21 cho giá trị từ 0 đến 20, cộng 10 để được 10-30
     timer = duration;
 
-    // Random số lần tap/phút từ 40 đến 100
-    int tapsPerMinute = 40 + (rand() % 61); // rand() % 61 cho giá trị từ 0 đến 60, cộng 40 để được 40-100
+    // Random số lần tap/phút từ 60 đến 150
+    int tapsPerMinute = 60 + (rand() % 151); // rand() % 61 cho giá trị từ 0 đến 60, cộng 40 để được 40-100
 
     // Tính requiredTaps dựa trên thời gian và tapsPerMinute
     // tapsPerMinute là số lần tap trong 60 giây, nên số lần tap trong duration giây là:

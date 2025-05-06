@@ -10,7 +10,6 @@ const int SCREEN_HEIGHT = 750;
 // Các hằng số khác
 const float BASE_ACTIVITIVE_PER_TAP = 1.5f;
 const float ACTIVITIVE_TO_RADIENT_RATE = 0.1f;
-const int MAX_TAP_SPEED = 100;
 
 // Màu sắc
 const SDL_Color COLOR_WHITE = {255, 255, 255, 255};

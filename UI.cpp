@@ -91,7 +91,6 @@ void UI::showBossMessage(const std::string& message) {
 }
 
 void UI::showLevelUpMessage(int level) {
-    // Bố sung sau
 }
 
 void UI::handleInput(SDL_Event& event, Player& player, std::vector<Item>& items, BossBattle& bossBattle) {
@@ -302,7 +301,7 @@ void UI::render(Player& player, TappingSystem& tappingSystem, std::vector<Item>&
             SDL_DestroyTexture(messageTexture);
             SDL_FreeSurface(messageSurface);
         }
-        messageTimer -= 0.016f; // Giả định 60 FPS
+        messageTimer -= 0.016f; // 60 FPS
     }
 
     // 10. Viết hướng dẫn game

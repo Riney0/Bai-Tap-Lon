@@ -35,7 +35,7 @@ private:
     float messageTimer; // Thời gian hiển thị thông báo
     static constexpr float MEME_FADE_DURATION = 0.25f; // Thời gian mờ dần của meme
     float memeFadeTimer; // Thời gian còn lại để hiển thị meme
-    static constexpr float SUPA_MO_APPEAR_TIME = 0.07f; // Thời gian hiển thị của cái mõ siêu vjp trước khi biến mất
+    static constexpr float SUPA_MO_APPEAR_TIME = 0.1f; // Thời gian hiển thị của cái mõ siêu vjp trước khi biến mất
     float moSupaVipTimer; // Thời gian còn lại để hiển thị cái mõ Supa VIP (trong bossfight)
 
 public:
