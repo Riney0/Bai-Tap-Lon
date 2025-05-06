@@ -11,7 +11,7 @@ Player::Player(Game* game)
 void Player::tapMo() {
     float activitiveGained = BASE_ACTIVITIVE_PER_TAP * moMultiplier * activitiveMultiplier;
     float radientGained = (rand() % (5 - 2 + 1) + 2) * radientMultiplier;
-    
+
     // Áp dụng hiệu ứng vật phẩm
 
     for (const auto& item : game->getItems()) {
@@ -41,11 +41,11 @@ void Player::tapMo() {
 
 void Player::checkLevelUp() {
     int newLevel = 0;
-    if (activitive >= 5000) newLevel = 5;
-    else if (activitive >= 4000) newLevel = 4;
-    else if (activitive >= 3000) newLevel = 3;
-    else if (activitive >= 2000) newLevel = 2;
-    else if (activitive >= 1000) newLevel = 1;
+    if (activitive >= 10000) newLevel = 5;
+    else if (activitive >= 8000) newLevel = 4;
+    else if (activitive >= 6000) newLevel = 3;
+    else if (activitive >= 4000) newLevel = 2;
+    else if (activitive >= 2000) newLevel = 1;
 
     if (newLevel > previousLevel) {
         level = newLevel;
