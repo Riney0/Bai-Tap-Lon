@@ -20,3 +20,4 @@ int main(int argc, char* argv[]) {
 
 
 // g++ main.cpp Game.cpp UI.cpp TappingSystem.cpp BossBattle.cpp Challenge.cpp Player.cpp Item.cpp Background.cpp AudioManager.cpp -o game -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+// Trung bình idle game không có menu🗣️

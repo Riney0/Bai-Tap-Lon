@@ -50,17 +50,12 @@ bool Game::init() {
     }
     std::cerr << "Renderer created successfully: " << renderer << std::endl; // Debug
 
-    // // Khởi tạo UI sau khi renderer được tạo
-    // ui = UI(renderer, this);
-    // ui.loadResources(); // Gọi loadResources() sau khi renderer được khởi tạo
-
     if (!audioManager.init()) {
         std::cerr << "AudioManager could not initialize!" << std::endl;
         return false;
     }
 
     audioManager.loadBackgroundMusic("asset/bgm.mp3");
-    // audioManager.loadBossMusic("asset/bossfight_music.flac");
     audioManager.loadBossMusic("asset/bossfight_music.mp3");
     audioManager.loadEndGameMusic("asset/endgame_music(2).mp3");
     audioManager.loadSoundEffect("tap", "asset/tap_sound.wav");
@@ -128,21 +123,6 @@ void Game::update(float deltaTime) {
     // player.update(deltaTime);
 
     if (!gameComplete) {
-        // challengeTimer += deltaTime;
-        // if (challengeTimer >= 60.0f && !challenge.isActive() && !bossBattle.isActive()) {
-        //     challenge.start();
-        //     challengeTimer = 0.0f;
-        // }
-
-        // if (challenge.isActive()) {
-        //     challenge.update(deltaTime);
-        //     if (challenge.isCompleted()) {
-        //         player.addRadient(challenge.getRadientReward());
-        //         player.addActivitive(challenge.getActivitiveReward());
-        //         ui.showLevelUpMessage(0);
-        //         player.checkLevelUp();
-        //     }
-        // }
 
         if (player.getLevel() >= 5 && !bossBattle.isActive() && !bossBattle.isWon() && !bossBattle.isLost()) {
             bossBattle.start();

@@ -26,6 +26,7 @@ private:
     SDL_Texture* moSupaVipTexture; // Hình ảnh cái mõ Supa VIP (trong bossfight)
     SDL_Texture* itemTextures[3]; // Hình ảnh của 3 vật phẩm (Double Activitive, Radient Boost, Radient Hyper Boost)
     SDL_Texture* memeTexture; // Hình ảnh meme
+    SDL_Texture* nahIdWinTexture; // Hình ảnh nahIdWin
     SDL_Color whiteColor; // Màu trắng cho chữ
     SDL_Color blackColor; // Màu đen cho chữ
     SDL_Color blueColor;  // Màu xanh lam cho hộp activitive
