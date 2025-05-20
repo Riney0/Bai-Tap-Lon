@@ -10,7 +10,7 @@
 
 ## Key Features:
 - **Controls:** Space button and Mouse left button
-- **Game Area:** 1340x740 pixel game window with a main play area containing Taping object and Shop.
+- **Game Area:** 1340x750 pixel game window with a main play area containing Taping object and Shop.
 - **Bossfight:** After reached level 5, enter a boss battle with a powerful enemy.
 - **Challenge:** Enter a challenge after every 20 seconds.
 - **Item:** Spend Radient to buy helpful items.
